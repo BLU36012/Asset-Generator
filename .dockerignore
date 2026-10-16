@@ -1,0 +1,8 @@
+node_modules
+**/node_modules
+**/dist
+server/storage
+.git
+.env
+**/.env
+*.log

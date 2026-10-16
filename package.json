@@ -1,0 +1,20 @@
+{
+  "name": "asset-generator",
+  "private": true,
+  "description": "Generate game-ready 3D and 2D assets for Unity, Godot, Roblox Studio and Unreal Engine.",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c cyan,blue \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "start": "npm run start -w server",
+    "test": "npm run test -w server",
+    "typecheck": "npm run typecheck -w shared && npm run typecheck -w server && npm run typecheck -w client"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+
+# Server runtime data (SQLite DB, uploads, generated assets, JWT secret)
+server/storage/
+
+*.log
+.DS_Store
+Thumbs.db

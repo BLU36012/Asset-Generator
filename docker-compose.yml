@@ -1,0 +1,44 @@
+# Runs the whole app on one server: `docker compose up -d`, then open http://localhost:4000
+#
+# The API server manages the AI model: on first start it tells the ollama service to
+# download the model (progress shows in the UI), preloads it and queues requests.
+# Website visitors never install anything.
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama-models:/root/.ollama
+    # Uncomment to use an NVIDIA GPU (needs the NVIDIA Container Toolkit on the host):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - ollama
+    ports:
+      - "4000:4000"
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:3b
+      # The model runs in the ollama container, so the app never starts its own copy.
+      OLLAMA_AUTOSTART: "false"
+      OLLAMA_AUTOPULL: "true"
+      # Leave empty to have the server generate a random secret and keep it in the storage volume.
+      JWT_SECRET: ${JWT_SECRET:-}
+      # Keep "false" for plain http://localhost; set "true" behind HTTPS.
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    volumes:
+      - app-storage:/app/server/storage
+
+volumes:
+  ollama-models:
+  app-storage:
